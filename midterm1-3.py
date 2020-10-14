@@ -10,42 +10,56 @@ ex) i = 18 -> 2^1 * 3^2 -> {2:1, 3:2}
 
 """
 from collections.abc import Generator
-import math
+from collections import Counter
 
-
-class Factorization(Generator):
+class Factorization():
     def __init__(self, n):
         self.n = n
 
     def __iter__(self):
-        for i in range(self.n):
+        for i in range(1, self.n+1):
             yield self.make_factorization(i)
-        return
 
-    def __repr__(self):
-        return 'r'
-
-    def get_primes(self, n):
-        is_primes = [True] * n
-        max_length = math.ceil(math.sqrt(n))
-
-        for i in range(2, max_length):
-            if is_primes[i]:
+    def getPrimaryNum_Eratos(self, n):
+        nums = [True] * (n + 1)
+        for i in range(2, len(nums) // 2 + 1):
+            if nums[i] == True:
                 for j in range(i + i, n, i):
-                    is_primes[j] = False
-        return [i for i in range(2, n) if is_primes[i]]
+                    nums[j] = False
+        return [i for i in range(2, n) if nums[i] == True]
 
-    def make_factorization(self,n):
+    def make_factorization(self, n):
         factors = []
-        for prime in self.get_primes(n):
-            count = 0
-            while n % prime == 0:
-                n /= prime
-                count += 1
-            if count > 0:
-                factors.append({prime:count})
-        return factors
+        number = n
+        prime_nums = self.getPrimaryNum_Eratos(n + 1)
+
+        if n in prime_nums:
+            factors.append(n)
+
+        else:
+            answers = []
+            for prime_num in prime_nums:
+                if n % prime_num == 0:
+                    while (n % prime_num == 0):
+                        answers.append(prime_num)
+                        n = n // prime_num
+
+            for num in answers:
+                factors.append(num)
+        result = dict(Counter(factors))
+        if number == 1:
+            return 'i = {} {}'.format(number,{1:1} )
+        else:
+            return 'i = {} {}'.format(number,result )
 
 fact = Factorization(20)
 for elem in fact:
     print(elem)
+
+
+
+
+
+
+
+
