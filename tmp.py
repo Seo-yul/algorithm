@@ -29,6 +29,61 @@ ip = get('https://api.ipify.org').text
 print('My public IP address is:', ip)
 '''
 
-t = 'asdasd'
-t= t.replace('a','c')
-print(t)
+"""
+import boto3
+import json
+
+sns = boto3.client('sns')
+codepipeline = boto3.client('codepipeline')
+
+def lambda_handler(event, context):
+
+    def userParams(event):
+        value = ''
+        try:
+            value = event['CodePipeline.job'].data.actionConfiguration.configuration.UserParameters
+        except Exception:
+            value = ''
+
+        return value
+    print('EVENT--------')
+    print(event)
+
+    jobId = event['CodePipeline.job'].id
+    try:
+        sns.publish(
+            Message= '{} 배포 완료!'.format(userParams(event)),
+            TopicArn='arn:aws:sns:region:0123456789:my-topic-arn',
+        )
+
+        pipelineParams = {
+            'jobId': jobId
+        }
+
+        try:
+            return codepipeline.putJobSuccessResult(pipelineParams)
+        except Exception as pipelineErr:
+            print(pipelineErr)
+            print('SNS: success, CodePipeline: fail')
+            return pipelineErr
+
+    except Exception as snsErr:
+        print(snsErr)
+        pipelineParams = {
+            'jobId': jobId,
+            'failureDetails': {
+                'message': json.dumps(snsErr),
+                'type': 'JobFailed',
+                'externalExecutionId': context.invokeid
+            }
+        }
+
+        try :
+            return codepipeline.putJobFailureResult(pipelineParams)
+        except Exception as pipelineErr:
+            print(pipelineErr)
+            print('SNS: fail, CodePipeline: fail')
+            return pipelineErr
+        return snsErr
+"""
+
