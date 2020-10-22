@@ -25,6 +25,7 @@ def dijkstra(graph, start):
     queue = []
     heapq.heappush(queue, [distances[start], start])
 
+
     while queue:
         current_distance, current_node = heapq.heappop(queue)
 
@@ -43,24 +44,18 @@ def dijkstra(graph, start):
 def solution(n, vertex):
     graph_dict = defaultdict(list)
     for i in vertex:
-        if graph_dict[i[0]] and graph_dict[i[1]]:
-            graph_dict[i[0]].append(i[1])
-            graph_dict[i[1]].append(i[0])
+        graph_dict[i[0]].append(i[1])
+        graph_dict[i[1]].append(i[0])
 
-        elif not graph_dict[i[0]] and not graph_dict[i[1]]:
-            graph_dict[i[0]] = [i[1]]
-            graph_dict[i[1]] = [i[0]]
-
-        elif graph_dict[i[0]]:
-            graph_dict[i[1]] = [i[0]]
-            graph_dict[i[0]].append(i[1])
-
-        elif graph_dict[i[1]]:
-            graph_dict[i[0]] = [i[1]]
-            graph_dict[i[1]].append(i[0])
-
+    # print(graph_dict)
     result_dict = dijkstra(graph_dict, 1)
+    # print(result_dict)
+
+    # t = heapq.heappush()
+    # t = heapq.heapify(result_dict)
+    # print(t)
     res = sorted(result_dict.items(), key= lambda x: x[1], reverse=True)
+    # print(res)
     k, v = max(res, key= lambda x: x[1])
     answer = 0
     for item in res:
