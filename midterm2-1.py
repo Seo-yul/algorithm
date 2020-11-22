@@ -9,12 +9,23 @@ x	food_list	return
 """
 # 과제 1번 코드란
 
-def solution(x, food_list):
-    food_list.sort(reverse=True)
-    cnt = 0
-    for price in food_list:
-        c, x = divmod(x, price)
-        cnt += c
-    return cnt
+# def solution(x, food_list):
+#     food_list.sort(reverse=True)
+#     cnt = 0
+#     for price in food_list:
+#         c, x = divmod(x, price)
+#         cnt += c
+#     return cnt
+#
+# print(solution(20000, [100, 1500, 1200, 300]))
 
-print(solution(20000, [100, 1500, 1200, 300]))
+t = list()
+t.append('a')
+t.append('b')
+t.append('c')
+t.append('d')
+
+print(t)
+
+for alpha in t[::-1]:
+    print(alpha)

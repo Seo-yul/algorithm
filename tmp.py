@@ -1,89 +1,37 @@
-# import tempfile
-#
-#
-# def print_tmp():
-#     """
-#     Support
-#
-#         $ cd `tmp`
-#
-#     """
-#     print(tmp())
-#
-#
-# def tmp():
-#     """
-#     Create temp dir
-#     """
-#     return tempfile.mkdtemp()
-#
-#
-# if __name__ == '__main__':
-#     print_tmp()
+import heapq
+
+def dijkstra(graph, start):
+    distances = {node: float('inf') for node in graph}
+    distances[start] = 0
+    queue = []
+    heapq.heappush(queue, [distances[start], start])
+    print(queue)
+
+    while queue:
+        print(queue)
+        current_distance, current_node = heapq.heappop(queue)
+        print(current_distance, current_node)
+
+        if distances[current_node] < current_distance:
+            continue
+
+        for adjacent, weight in graph[current_node].items():
+            distance = current_distance + weight
+
+            if distance < distances[adjacent]:
+                distances[adjacent] = distance
+                heapq.heappush(queue, [distance, adjacent])
+
+    return distances
 
 
-'''
-from requests import get
+mygraph = {
+    'A': {'B': 8, 'C': 1, 'D': 2},
+    'B': {},
+    'C': {'B': 5, 'D': 2},
+    'D': {'E': 3, 'F': 5},
+    'E': {'F': 1},
+    'F': {'A': 5}
+}
 
-ip = get('https://api.ipify.org').text
-print('My public IP address is:', ip)
-'''
-
-"""
-import boto3
-import json
-
-sns = boto3.client('sns')
-codepipeline = boto3.client('codepipeline')
-
-def lambda_handler(event, context):
-
-    def userParams(event):
-        value = ''
-        try:
-            value = event['CodePipeline.job'].data.actionConfiguration.configuration.UserParameters
-        except Exception:
-            value = ''
-
-        return value
-    print('EVENT--------')
-    print(event)
-
-    jobId = event['CodePipeline.job'].id
-    try:
-        sns.publish(
-            Message= '{} 배포 완료!'.format(userParams(event)),
-            TopicArn='arn:aws:sns:region:0123456789:my-topic-arn',
-        )
-
-        pipelineParams = {
-            'jobId': jobId
-        }
-
-        try:
-            return codepipeline.putJobSuccessResult(pipelineParams)
-        except Exception as pipelineErr:
-            print(pipelineErr)
-            print('SNS: success, CodePipeline: fail')
-            return pipelineErr
-
-    except Exception as snsErr:
-        print(snsErr)
-        pipelineParams = {
-            'jobId': jobId,
-            'failureDetails': {
-                'message': json.dumps(snsErr),
-                'type': 'JobFailed',
-                'externalExecutionId': context.invokeid
-            }
-        }
-
-        try :
-            return codepipeline.putJobFailureResult(pipelineParams)
-        except Exception as pipelineErr:
-            print(pipelineErr)
-            print('SNS: fail, CodePipeline: fail')
-            return pipelineErr
-        return snsErr
-"""
-
+dijkstra(mygraph, 'A')
